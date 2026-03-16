@@ -1,6 +1,6 @@
 [
   {
-    "title": "FIL - Mobile",
+    "title": "Mobile",
     "type": "phone",
     "width": 375,
     "height": 812,
@@ -8,7 +8,7 @@
     "mobile": true
   },
   {
-    "title": "FIL - Tablet",
+    "title": "Tablet",
     "type": "tablet",
     "width": 450,
     "height": 900,
@@ -16,7 +16,7 @@
     "mobile": true
   },
   {
-    "title": "FIL - Desktop SM",
+    "title": "Desktop SM",
     "type": "notebook",
     "width": 1280,
     "height": 800,
@@ -24,7 +24,7 @@
     "mobile": false
   },
   {
-    "title": "FIL - Desktop LG",
+    "title": "Desktop LG",
     "type": "notebook",
     "width": 1920,
     "height": 1080,

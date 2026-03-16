@@ -49,12 +49,12 @@ with open(prefs_file, "r") as f:
 with open(devices_file, "r") as f:
     new_devices = json.load(f)
 
-# Navigate to devtools.preferences.customEmulatedDeviceList
+# Navigate to devtools.preferences
 devtools = prefs.setdefault("devtools", {})
 devtools_prefs = devtools.setdefault("preferences", {})
 
-# customEmulatedDeviceList is stored as a JSON string inside preferences
-raw = devtools_prefs.get("customEmulatedDeviceList", "[]")
+# Chrome stores custom devices under "custom-emulated-device-list" (kebab-case)
+raw = devtools_prefs.get("custom-emulated-device-list", "[]")
 existing = json.loads(raw)
 
 # Build set of existing device titles
@@ -69,12 +69,12 @@ for dev in new_devices:
         print(f"  SKIP (already exists): {title}")
         continue
 
-    # Build Chrome DevTools emulated device format
+    is_mobile = dev.get("mobile", True)
     chrome_device = {
         "title": title,
         "type": dev.get("type", "phone"),
         "user-agent": "",
-        "capabilities": ["touch", "mobile"] if dev.get("mobile", True) else [],
+        "capabilities": ["mobile", "touch"] if is_mobile else [],
         "screen": {
             "device-pixel-ratio": dev["deviceScaleFactor"],
             "vertical": {
@@ -88,18 +88,31 @@ for dev in new_devices:
         },
         "modes": [
             {
-                "title": "default",
+                "title": "",
                 "orientation": "vertical",
                 "insets": {"left": 0, "top": 0, "right": 0, "bottom": 0}
             },
             {
-                "title": "default",
+                "title": "",
                 "orientation": "horizontal",
                 "insets": {"left": 0, "top": 0, "right": 0, "bottom": 0}
             }
         ],
         "show-by-default": True,
-        "show": "Always"
+        "dual-screen": False,
+        "foldable-screen": False,
+        "show": "Default",
+        "user-agent-metadata": {
+            "brands": [{"brand": "", "version": ""}],
+            "fullVersionList": [{"brand": "", "version": ""}],
+            "fullVersion": "",
+            "platform": "",
+            "platformVersion": "",
+            "architecture": "",
+            "model": "",
+            "mobile": is_mobile,
+            "formFactors": []
+        }
     }
 
     existing.append(chrome_device)
@@ -108,7 +121,7 @@ for dev in new_devices:
     print(f"  ADDED: {title}")
 
 # Save back as JSON string
-devtools_prefs["customEmulatedDeviceList"] = json.dumps(existing)
+devtools_prefs["custom-emulated-device-list"] = json.dumps(existing)
 
 with open(prefs_file, "w") as f:
     json.dump(prefs, f, separators=(",", ":"))
